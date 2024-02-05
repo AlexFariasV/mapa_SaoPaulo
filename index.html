@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <style>
- * {
+     * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
@@ -31,17 +31,14 @@
 
     svg {
         width: 100%;
-    }
-
-    #map {
-        width: 100%;
-        height: 100%;
-        transition: transform 0.5s ease;
+        transition: transform 0.09s ease;
+        transform-origin: center center;
         cursor: grab;
-        user-select: none; /* Remova esta linha se necessário */
+        user-select: none;
     }
 
-    #map.dragging {
+    #map.dragging svg,
+    #map.zooming svg {
         cursor: grabbing;
     }
 
@@ -61,7 +58,6 @@
         border: 1px solid;
         cursor: pointer;
     }
-
 
 </style>
 
@@ -2666,13 +2662,16 @@
     <script>
         let currentScale = 1;
         const defaultScale = 1;
+        let isDragging = false;
+        let isZooming = false;
+        let startX, startY, offsetX = 0, offsetY = 0;
+
         function zoomIn() {
             currentScale += 1;
             applyTransform();
         }
 
         function zoomOut() {
-            // Limitando a escala mínima ao valor padrão do mapa
             if (currentScale - 1 >= defaultScale) {
                 currentScale -= 1;
                 applyTransform();
@@ -2680,9 +2679,54 @@
         }
 
         function applyTransform() {
-            const mapElement = document.getElementById('map');
-            mapElement.style.transform = `scale(${currentScale})`;
+            const svgElement = document.getElementById('svg-map');
+            svgElement.style.transform = `scale(${currentScale}) translate(${offsetX / currentScale}px, ${offsetY / currentScale}px)`;
         }
+
+        function startDragging(e) {
+            if (e.button === 0) {
+                isDragging = true;
+                startX = e.clientX - offsetX;
+                startY = e.clientY - offsetY;
+                document.getElementById('map').classList.add('dragging');
+            } else if (e.button === 2) {
+                isZooming = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                document.getElementById('map').classList.add('zooming');
+            }
+        }
+
+        function stopDragging() {
+            if (isDragging) {
+                isDragging = false;
+                document.getElementById('map').classList.remove('dragging');
+            } else if (isZooming) {
+                isZooming = false;
+                document.getElementById('map').classList.remove('zooming');
+            }
+        }
+
+        function handleDrag(e) {
+            if (!isDragging) return;
+            offsetX = e.clientX - startX;
+            offsetY = e.clientY - startY;
+            applyTransform();
+        }
+
+        function handleZoom(e) {
+            if (e.deltaY !== 0) {
+                zoomWithDelta(e.deltaY > 0 ? -1 : 1);
+                e.preventDefault();
+            }
+        }
+
+        function zoomWithDelta(delta) {
+            currentScale += delta;
+            applyTransform();
+        }
+
+        document.addEventListener('mousemove', handleDrag);
 
 
     </script>
