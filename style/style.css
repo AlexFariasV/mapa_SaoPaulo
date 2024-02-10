@@ -44,10 +44,11 @@ svg {
     background: #fff;
     padding: 8px;
     font-weight: 500;
-    font-size: large;
-    border: 1.5px solid #a9a9a9;
+    font-size: medium;
+    border: 1px solid;
     cursor: pointer;
 }
-.zoom-buttons button:hover{
-    background-color: #a9a9a9;
+path{
+    margin: 10px;
+    
 }
