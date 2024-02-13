@@ -5,8 +5,10 @@ let isZooming = false;
 let startX, startY, offsetX = 0, offsetY = 0;
 
 function zoomIn() {
-    currentScale += 1;
-    applyTransform();
+    if (currentScale + 1 <= defaultScale + 2) {
+        currentScale += 1;
+        applyTransform();
+    }
 }
 
 function zoomOut() {

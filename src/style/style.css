@@ -17,6 +17,7 @@ body {
     max-width: 700px;
     overflow: hidden;
     position: relative;
+    width: 100%;
 }
 
 svg {
