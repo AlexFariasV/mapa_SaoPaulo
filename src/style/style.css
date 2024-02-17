@@ -62,9 +62,24 @@ path{
     top: 20px;
     right: 20px;
     background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
+    border: 1px solid #0000ff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: none;
+    z-index: 9999999999;
+
+}
+#urea-title{
+    background-color: #0000ff;
+    padding: 10px 20px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.1rem;
+
+}
+
+#urea-municipios, #urea-populacao{
+    padding: 10px 15px 8px 15px;
+    color: #0000ff;
+
 }
