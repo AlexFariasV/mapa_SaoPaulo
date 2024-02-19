@@ -1,11 +1,10 @@
 let currentScale = 1;
 const defaultScale = 1;
-let originalStrokeWidth = 250; // Valor original de stroke-width
+let originalStrokeWidth = 250; 
 let isDragging = false;
 let startX, startY, offsetX = 0, offsetY = 0;
-let sensitivity = 1; // Sensibilidade de arrastar
+let sensitivity = 1; 
 
-// Desabilita o evento de rolagem do mouse para evitar zoom
 document.addEventListener('wheel', function(e) {
     e.preventDefault();
 }, { passive: false });
@@ -28,7 +27,6 @@ function zoomOut() {
 
 function applyTransform() {
     const svgElement = document.getElementById('svg-map');
-    svgElement.style.transition = 'transform 0.2s ease'; // Adiciona uma transição suave
     svgElement.style.transform = `scale(${currentScale}) translate(${offsetX}px, ${offsetY}px)`;
 }
 
@@ -53,10 +51,15 @@ function zoomWithDelta(delta) {
 }
 
 function startDragging(e) {
-    if (e.button === 0) {
+    if (e.button === 0 || e.type === 'touchstart') {
         isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        if (e.type === 'mousedown') {
+            startX = e.clientX;
+            startY = e.clientY;
+        } else if (e.type === 'touchstart' && e.touches.length === 1) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }
     }
 }
 
@@ -75,20 +78,12 @@ function handleDrag(e) {
         } else if (e.type === 'touchmove' && e.touches.length === 1) {
             newX = e.touches[0].clientX;
             newY = e.touches[0].clientY;
-        } else {
-            return; 
         }
-
-        const deltaX = newX - startX;
-        const deltaY = newY - startY;
-
+        const scaledSensitivity = sensitivity / currentScale; 
+        offsetX += (newX - startX) * scaledSensitivity;
+        offsetY += (newY - startY) * scaledSensitivity;
         startX = newX;
         startY = newY;
-
-        
-        offsetX += deltaX * 0.5; 
-        offsetY += deltaY * 0.5; 
-        
         applyTransform();
     }
 }
@@ -97,6 +92,7 @@ document.addEventListener('wheel', handleZoom);
 document.addEventListener('mousedown', startDragging);
 document.addEventListener('mouseup', stopDragging);
 document.addEventListener('mousemove', handleDrag);
+
 document.addEventListener('touchstart', startDragging);
 document.addEventListener('touchend', stopDragging);
 document.addEventListener('touchmove', handleDrag);
