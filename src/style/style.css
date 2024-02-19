@@ -83,3 +83,9 @@ path{
     color: #0000ff;
 
 }
+
+@media(max-width:900px){
+    .zoom-buttons{
+        display: none;
+    }
+}
