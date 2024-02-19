@@ -51,15 +51,10 @@ function zoomWithDelta(delta) {
 }
 
 function startDragging(e) {
-    if (e.button === 0 || e.type === 'touchstart') {
+    if (e.button === 0) {
         isDragging = true;
-        if (e.type === 'mousedown') {
-            startX = e.clientX;
-            startY = e.clientY;
-        } else if (e.type === 'touchstart' && e.touches.length === 1) {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        }
+        startX = e.clientX;
+        startY = e.clientY;
     }
 }
 
@@ -71,14 +66,8 @@ function stopDragging() {
 
 function handleDrag(e) {
     if (isDragging) {
-        let newX, newY;
-        if (e.type === 'mousemove') {
-            newX = e.clientX;
-            newY = e.clientY;
-        } else if (e.type === 'touchmove' && e.touches.length === 1) {
-            newX = e.touches[0].clientX;
-            newY = e.touches[0].clientY;
-        }
+        const newX = e.clientX;
+        const newY = e.clientY;
         const scaledSensitivity = sensitivity / currentScale; 
         offsetX += (newX - startX) * scaledSensitivity;
         offsetY += (newY - startY) * scaledSensitivity;
@@ -88,11 +77,8 @@ function handleDrag(e) {
     }
 }
 
+
 document.addEventListener('wheel', handleZoom);
 document.addEventListener('mousedown', startDragging);
 document.addEventListener('mouseup', stopDragging);
 document.addEventListener('mousemove', handleDrag);
-
-document.addEventListener('touchstart', startDragging);
-document.addEventListener('touchend', stopDragging);
-document.addEventListener('touchmove', handleDrag);
