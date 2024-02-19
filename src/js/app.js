@@ -1,11 +1,11 @@
 let currentScale = 1;
 const defaultScale = 1;
-let originalStrokeWidth = 250; 
+let originalStrokeWidth = 250;
 let isDragging = false;
 let startX, startY, offsetX = 0, offsetY = 0;
-let sensitivity = 1; 
+let sensitivity = 1;
 
-document.addEventListener('wheel', function(e) {
+document.addEventListener('wheel', function (e) {
     e.preventDefault();
 }, { passive: false });
 
@@ -51,7 +51,7 @@ function zoomWithDelta(delta) {
 }
 
 function startDragging(e) {
-    if (e.button === 0 || e.type === 'touchstart') {
+    if ((e.button === 0 && e.type === 'mousedown') || e.type === 'touchstart') {
         isDragging = true;
         if (e.type === 'mousedown') {
             startX = e.clientX;
@@ -79,7 +79,7 @@ function handleDrag(e) {
             newX = e.touches[0].clientX;
             newY = e.touches[0].clientY;
         }
-        const scaledSensitivity = sensitivity / currentScale; 
+        const scaledSensitivity = sensitivity / currentScale;
         offsetX += (newX - startX) * scaledSensitivity;
         offsetY += (newY - startY) * scaledSensitivity;
         startX = newX;
