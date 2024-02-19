@@ -1,10 +1,11 @@
 let currentScale = 1;
 const defaultScale = 1;
-let originalStrokeWidth = 250;
+let originalStrokeWidth = 250; // Valor original de stroke-width
 let isDragging = false;
 let startX, startY, offsetX = 0, offsetY = 0;
-let sensitivity = 1;
+let sensitivity = 1; // Sensibilidade de arrastar
 
+// Desabilita o evento de rolagem do mouse para evitar zoom
 document.addEventListener('wheel', function(e) {
     e.preventDefault();
 }, { passive: false });
@@ -27,6 +28,7 @@ function zoomOut() {
 
 function applyTransform() {
     const svgElement = document.getElementById('svg-map');
+    svgElement.style.transition = 'transform 0.2s ease'; // Adiciona uma transição suave
     svgElement.style.transform = `scale(${currentScale}) translate(${offsetX}px, ${offsetY}px)`;
 }
 
@@ -51,28 +53,16 @@ function zoomWithDelta(delta) {
 }
 
 function startDragging(e) {
-    if (e.type === 'mousedown' || e.type === 'touchstart') {
-        if (e.type === 'mousedown' && e.button !== 0) return;
+    if (e.button === 0) {
         isDragging = true;
-        if (e.type === 'mousedown') {
-            startX = e.clientX;
-            startY = e.clientY;
-        } else if (e.type === 'touchstart' && e.touches.length === 1) {
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-        }
-        document.getElementById('map').classList.add('dragging');
-        document.addEventListener('mousemove', handleDrag);
-        document.addEventListener('touchmove', handleDrag);
+        startX = e.clientX;
+        startY = e.clientY;
     }
 }
 
 function stopDragging() {
     if (isDragging) {
         isDragging = false;
-        document.getElementById('map').classList.remove('dragging');
-        document.removeEventListener('mousemove', handleDrag);
-        document.removeEventListener('touchmove', handleDrag);
     }
 }
 
@@ -86,13 +76,22 @@ function handleDrag(e) {
             newX = e.touches[0].clientX;
             newY = e.touches[0].clientY;
         } else {
-            return;
+            return; // Ignora eventos de toque com mais de um dedo
         }
-        const scaledSensitivity = sensitivity / currentScale;
-        offsetX += (newX - startX) * scaledSensitivity;
-        offsetY += (newY - startY) * scaledSensitivity;
+
+        // Calcular a diferença entre as posições atual e anterior
+        const deltaX = newX - startX;
+        const deltaY = newY - startY;
+
+        // Atualizar as posições iniciais para as novas posições
         startX = newX;
         startY = newY;
+
+        // Aplicar a diferença nas posições do mapa
+        offsetX += deltaX * sensitivity;
+        offsetY += deltaY * sensitivity;
+
+        // Aplicar a transformação com a nova posição
         applyTransform();
     }
 }
@@ -100,5 +99,7 @@ function handleDrag(e) {
 document.addEventListener('wheel', handleZoom);
 document.addEventListener('mousedown', startDragging);
 document.addEventListener('mouseup', stopDragging);
+document.addEventListener('mousemove', handleDrag);
 document.addEventListener('touchstart', startDragging);
 document.addEventListener('touchend', stopDragging);
+document.addEventListener('touchmove', handleDrag);
