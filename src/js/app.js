@@ -76,22 +76,19 @@ function handleDrag(e) {
             newX = e.touches[0].clientX;
             newY = e.touches[0].clientY;
         } else {
-            return; // Ignora eventos de toque com mais de um dedo
+            return; 
         }
 
-        // Calcular a diferença entre as posições atual e anterior
         const deltaX = newX - startX;
         const deltaY = newY - startY;
 
-        // Atualizar as posições iniciais para as novas posições
         startX = newX;
         startY = newY;
 
-        // Aplicar a diferença nas posições do mapa
-        offsetX += deltaX * sensitivity;
-        offsetY += deltaY * sensitivity;
-
-        // Aplicar a transformação com a nova posição
+        
+        offsetX += deltaX * 0.5; 
+        offsetY += deltaY * 0.5; 
+        
         applyTransform();
     }
 }
