@@ -1,9 +1,9 @@
 let currentScale = 1;
 const defaultScale = 1;
-let originalStrokeWidth = 250; 
+let originalStrokeWidth = 250;
 let isDragging = false;
 let startX, startY, offsetX = 0, offsetY = 0;
-let sensitivity = 1; 
+let sensitivity = 1;
 
 document.addEventListener('wheel', function(e) {
     e.preventDefault();
@@ -51,24 +51,44 @@ function zoomWithDelta(delta) {
 }
 
 function startDragging(e) {
-    if (e.button === 0) {
+    if (e.type === 'mousedown' || e.type === 'touchstart') {
+        if (e.type === 'mousedown' && e.button !== 0) return;
         isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        if (e.type === 'mousedown') {
+            startX = e.clientX;
+            startY = e.clientY;
+        } else if (e.type === 'touchstart' && e.touches.length === 1) {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }
+        document.getElementById('map').classList.add('dragging');
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('touchmove', handleDrag);
     }
 }
 
 function stopDragging() {
     if (isDragging) {
         isDragging = false;
+        document.getElementById('map').classList.remove('dragging');
+        document.removeEventListener('mousemove', handleDrag);
+        document.removeEventListener('touchmove', handleDrag);
     }
 }
 
 function handleDrag(e) {
     if (isDragging) {
-        const newX = e.clientX;
-        const newY = e.clientY;
-        const scaledSensitivity = sensitivity / currentScale; 
+        let newX, newY;
+        if (e.type === 'mousemove') {
+            newX = e.clientX;
+            newY = e.clientY;
+        } else if (e.type === 'touchmove' && e.touches.length === 1) {
+            newX = e.touches[0].clientX;
+            newY = e.touches[0].clientY;
+        } else {
+            return;
+        }
+        const scaledSensitivity = sensitivity / currentScale;
         offsetX += (newX - startX) * scaledSensitivity;
         offsetY += (newY - startY) * scaledSensitivity;
         startX = newX;
@@ -77,8 +97,8 @@ function handleDrag(e) {
     }
 }
 
-
 document.addEventListener('wheel', handleZoom);
 document.addEventListener('mousedown', startDragging);
 document.addEventListener('mouseup', stopDragging);
-document.addEventListener('mousemove', handleDrag);
+document.addEventListener('touchstart', startDragging);
+document.addEventListener('touchend', stopDragging);
