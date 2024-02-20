@@ -1,9 +1,9 @@
 let currentScale = 1;
 const defaultScale = 1;
-let originalStrokeWidth = 250; 
+let originalStrokeWidth = 250;
 let isDragging = false;
 let startX, startY, offsetX = 0, offsetY = 0;
-let sensitivity = 1; 
+let sensitivity = 1;
 
 document.addEventListener('wheel', function(e) {
     e.preventDefault();
@@ -68,7 +68,7 @@ function handleDrag(e) {
     if (isDragging) {
         const newX = e.clientX;
         const newY = e.clientY;
-        const scaledSensitivity = sensitivity / currentScale; 
+        const scaledSensitivity = sensitivity / currentScale;
         offsetX += (newX - startX) * scaledSensitivity;
         offsetY += (newY - startY) * scaledSensitivity;
         startX = newX;
@@ -77,8 +77,12 @@ function handleDrag(e) {
     }
 }
 
-
 document.addEventListener('wheel', handleZoom);
 document.addEventListener('mousedown', startDragging);
 document.addEventListener('mouseup', stopDragging);
 document.addEventListener('mousemove', handleDrag);
+
+document.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isDragging = false;
+});
