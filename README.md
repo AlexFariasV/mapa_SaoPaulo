@@ -5,7 +5,7 @@
 - Projeto inspirado no site https://marcolegal.aguaesaneamento.org.br/estado/SP/
 
 ### Tecnologias Utilizadas
-- Frontend: HTML, CSS & Sass
+- Frontend: HTML, CSS & Js
 
 ### Licença
 - Este projeto está licenciado sob a Licença MIT.
